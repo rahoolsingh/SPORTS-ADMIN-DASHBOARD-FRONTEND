@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie"; // Importing js-cookie to manage cookies
-
 import propTypes from "prop-types";
 
 function Login({ setStage }) {
@@ -10,130 +9,141 @@ function Login({ setStage }) {
     const [otpSent, setOtpSent] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
     useEffect(() => {
-        // Check if JWT token exists in cookies
         const token = Cookies.get("jwt");
         if (token) {
-            // Send token to the server to validate session
             axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-            console.log(
-                "JWT Token available, sending to server for validation..."
-            );
-            // You can call an endpoint here to validate the token if needed
             axios
                 .post(`${BACKEND_URL}/auth/continue-session`)
                 .then((response) => {
-                    console.log(
-                        "Session validated successfully!",
-                        response.data
-                    );
                     setIsVerified(true);
-                    setLoading(false);
                     setOtpSent(true);
                     setStage("login");
                 })
                 .catch((error) => {
-                    console.error(
-                        "Error validating session:",
-                        error.response
-                            ? error.response.data.message
-                            : error.message
-                    );
                     Cookies.remove("jwt");
                 });
         }
-    });
+    }, []);
 
-    // Function to send OTP
     const handleSendOtp = async () => {
         setLoading(true);
+        setErrorMessage(""); // Reset error message
         try {
             const response = await axios.post(`${BACKEND_URL}/auth/send-otp`, {
                 email,
             });
             if (response.status === 200) {
                 setOtpSent(true);
-                alert("OTP sent successfully!");
             }
         } catch (error) {
-            alert(
-                `Error in sending OTP: ${
-                    error.response ? error.response.data.message : error.message
-                }`
+            setErrorMessage(
+                error.response
+                    ? error.response.data.message
+                    : "Error sending OTP"
             );
         } finally {
             setLoading(false);
         }
     };
 
-    // Function to verify OTP
     const handleVerifyOtp = async () => {
         setLoading(true);
+        setErrorMessage(""); // Reset error message
         try {
             const response = await axios.post(
                 `${BACKEND_URL}/auth/verify-otp`,
-                {
-                    email,
-                    otp,
-                }
+                { email, otp }
             );
             if (response.status === 200) {
                 setIsVerified(true);
-                // Store JWT token in secure cookie
                 const token = response.data.token; // Assuming your backend returns the token
                 Cookies.set("jwt", token, { secure: true, sameSite: "Strict" });
                 setStage("login");
             }
         } catch (error) {
-            alert("Invalid OTP!", error.response.data.message);
+            setErrorMessage("Invalid OTP! Please try again.");
         } finally {
             setLoading(false);
         }
     };
-    return !otpSent ? (
-        <div className="flex flex-col items-center">
-            <input
-                type="email"
-                placeholder="Enter admin email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="p-2 mb-4 w-72 border border-gray-300 rounded text-black"
-            />
-            <button
-                onClick={handleSendOtp}
-                disabled={loading}
-                className={`px-4 py-2 ${
-                    loading ? "bg-gray-400" : "bg-blue-500"
-                } text-white rounded hover:bg-blue-600`}
-            >
-                {loading ? "Sending..." : "Send OTP"}
-            </button>
-        </div>
-    ) : (
-        !isVerified && (
-            <div className="flex flex-col items-center">
-                <h2 className="text-xl mb-4">Enter OTP sent to {email}</h2>
-                <input
-                    type="text"
-                    placeholder="Enter OTP"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    className="p-2 mb-4 w-72 border border-gray-300 rounded text-black"
-                />
-                <button
-                    onClick={handleVerifyOtp}
-                    disabled={loading}
-                    className={`px-4 py-2 ${
-                        loading ? "bg-gray-400" : "bg-green-500"
-                    } text-white rounded hover:bg-green-600`}
-                >
-                    {loading ? "Verifying..." : "Verify OTP"}
-                </button>
+
+    return (
+        <div className="flex items-center justify-center w-full">
+            <div className="bg-white dark:bg-gray-800 p-8 rounded shadow-md w-full max-w-md">
+                <h2 className="text-3xl font-bold mb-6 text-center text-white">
+                    Admin Login
+                </h2>
+                {errorMessage && (
+                    <p className="text-red-500 text-center mb-4">
+                        {errorMessage}
+                    </p>
+                )}
+                {!otpSent ? (
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleSendOtp();
+                        }}
+                    >
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="p-4 mb-4 w-full border border-gray-300 rounded text-black dark:text-white bg-gray-50 dark:bg-gray-700 focus:outline-none focus:border-blue-500"
+                            required
+                        />
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className={`w-full py-3 ${
+                                loading ? "bg-gray-400" : "bg-blue-600"
+                            } text-white rounded hover:bg-blue-700 transition-colors duration-300`}
+                        >
+                            {loading ? "Sending..." : "Send OTP"}
+                        </button>
+                    </form>
+                ) : (
+                    !isVerified && (
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                handleVerifyOtp();
+                            }}
+                        >
+                            <h2 className="text-2xl font-bold mb-4 text-center text-black dark:text-white">
+                                Enter OTP
+                            </h2>
+                            <p className="mb-4 text-center text-gray-600 dark:text-gray-400">
+                                OTP has been sent to {email}
+                            </p>
+                            <input
+                                type="text"
+                                placeholder="Enter OTP"
+                                value={otp}
+                                onChange={(e) => setOtp(e.target.value)}
+                                className="p-4 mb-4 w-full border border-gray-300 rounded text-black dark:text-white bg-gray-50 dark:bg-gray-700 focus:outline-none focus:border-blue-500"
+                                required
+                            />
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className={`w-full py-3 ${
+                                    loading ? "bg-gray-400" : "bg-green-600"
+                                } text-white rounded hover:bg-green-700 transition-colors duration-300`}
+                            >
+                                {loading ? "Verifying..." : "Verify OTP"}
+                            </button>
+                        </form>
+                    )
+                )}
             </div>
-        )
+        </div>
     );
 }
 

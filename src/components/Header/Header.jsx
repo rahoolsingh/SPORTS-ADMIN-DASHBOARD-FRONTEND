@@ -70,7 +70,7 @@ function Header({ stage, setStage, page, setPage }) {
             }
         };
         fetchCounts();
-    }, [getCount, pages]);
+    }, [getCount, pages, stage]);
 
     return (
         <header className="p-4 bg-gray-800 text-gray-50 w-full">
@@ -122,7 +122,7 @@ function Header({ stage, setStage, page, setPage }) {
                     )}
                 </div>
             </div>
-            {error && <p className="text-red-500 text-center mt-2">{error}</p>}
+            {/* {error && <p className="text-red-500 text-center mt-2">{error}</p>} */}
         </header>
     );
 }
