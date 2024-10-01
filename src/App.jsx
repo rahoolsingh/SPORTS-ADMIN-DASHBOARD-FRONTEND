@@ -1,35 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import Login from "./components/Login/Login";
+import AtheleteAllRecords from "./components/Athelete/AtheleteAllRecords";
+import Header from "./components/Header/Header";
+import AtheletePendingRecords from "./components/Athelete/PendingAtheleteRecords";
 
-function App() {
-  const [count, setCount] = useState(0)
+const Auth = () => {
+    // const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    // not-login -> login
+    const [stage, setStage] = useState("not-login");
+    const [page, setPage] = useState("");
 
-export default App
+    return (
+        <div className="flex flex-col items-center justify-between h-full min-h-screen">
+            <Header
+                stage={stage}
+                setStage={setStage}
+                page={page}
+                setPage={setPage}
+            />
+            {stage === "not-login" && <Login setStage={setStage} />}
+
+            {stage === "login" && page === "all-atheletes" && (
+                <AtheleteAllRecords />
+            )}
+
+            {stage === "login" && page === "pending-atheletes" && (
+                <AtheletePendingRecords />
+            )}
+
+            <footer className="p-4 bg-gray-800 text-gray-50 w-full mt-4">
+                <img
+                    src="https://raw.githubusercontent.com/rahoolsingh/Backend/refs/heads/master/public/assets/logo-white-border.png"
+                    alt="logo"
+                    className="h-full bg-white max-h-12 m-auto"
+                />
+                <div className="container mx-auto">
+                    <p className="text-center text-sm mt-2">
+                        Made with ❤️ by DRS Technology
+                    </p>
+                </div>
+            </footer>
+        </div>
+    );
+};
+
+export default Auth;
