@@ -1,10 +1,87 @@
 import propTypes from "prop-types";
+import ConfirmationPopup from "../Modals/ConfirmationPopup";
+import { useState } from "react";
+import Cookies from "js-cookie"; // Importing js-cookie to manage cookies
+import axios from "axios";
 
-function AtheleteTable({ atheleteData }) {
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+function AtheleteTable({ atheleteData, setAtheleteData }) {
+    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [confirmationConfig, setConfirmationConfig] = useState({});
+
+    const handleApprove = async (regNo) => {
+        try {
+            const response = await axios.put(
+                `${BACKEND_URL}/athelete/mark-approved/${regNo}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${Cookies.get("jwt")}`,
+                    },
+                }
+            );
+            console.log("Approved:", response.data);
+            setAtheleteData((prevData) =>
+                prevData.filter((data) => data.regNo !== regNo)
+            );
+        } catch (error) {
+            console.error(
+                "Error approving record:",
+                error.response ? error.response.data.message : error.message
+            );
+        }
+    };
+
+    const handleReject = async (regNo) => {
+        try {
+            const response = await axios.put(
+                `${BACKEND_URL}/athelete/mark-rejected/${regNo}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${Cookies.get("jwt")}`,
+                    },
+                }
+            );
+            setAtheleteData((prevData) =>
+                prevData.filter((data) => data.regNo !== regNo)
+            );
+            console.log("Rejected:", response.data);
+        } catch (error) {
+            console.error(
+                "Error rejecting record:",
+                error.response ? error.response.data.message : error.message
+            );
+        }
+    };
+
     return (
         <div className="w-full p-4">
+            {showConfirmation && (
+                <ConfirmationPopup
+                    message={confirmationConfig.message}
+                    confirmFunction={confirmationConfig.confirmFunction}
+                    setShowConfirmation={setShowConfirmation}
+                />
+            )}
+
+            <p>
+                Live Count:{" "}
+                <span className="text-yellow-500 font-semibold">
+                    {atheleteData.length}
+                </span>
+            </p>
+
             {atheleteData.map((data) => (
-                <AtheleteCard Data={data} key={data.regNo} />
+                <AtheleteCard
+                    Data={data}
+                    key={data.regNo}
+                    setShowConfirmation={setShowConfirmation}
+                    setConfirmationConfig={setConfirmationConfig}
+                    handleApprove={handleApprove}
+                    handleReject={handleReject}
+                />
             ))}
         </div>
     );
@@ -12,14 +89,20 @@ function AtheleteTable({ atheleteData }) {
 
 export default AtheleteTable;
 
-function AtheleteCard({ Data }) {
+function AtheleteCard({
+    Data,
+    setShowConfirmation,
+    setConfirmationConfig,
+    handleApprove,
+    handleReject,
+}) {
     return (
         <div
             className={`
             ${
                 Data.status === "pending"
                     ? "border-yellow-400 bg-yellow-400"
-                    : Data.status === "app bg-roved"
+                    : Data.status === "approved"
                     ? "border-green-400 bg-green-400"
                     : "border-red-400 bg-red-400"
             }
@@ -65,37 +148,69 @@ function AtheleteCard({ Data }) {
             {DocumentFields.map((field) => (
                 <div className="col-span-1" key={field.name}>
                     <p className="font-semibold">{field.label}</p>
-                    <a
-                        href={Data[field.name]}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-sm text-blue-500"
-                    >
-                        View Document
-                    </a>
+                    {Data[field.name] ? (
+                        <a
+                            href={Data[field.name]}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-sm text-blue-500"
+                        >
+                            View Document
+                        </a>
+                    ) : (
+                        <p className="text-xs text-red-500">
+                            ERROR: Invalid Document
+                            <span className="text-xs text-red-500 block">
+                                ID Card will not be generated
+                            </span>
+                        </p>
+                    )}
                 </div>
             ))}
 
             <div className="md:col-span-2 flex justify-end items-center text-sm">
                 {Data.status === "pending" && (
                     <>
-                        <button className="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-800 font-medium">
+                        <button
+                            onClick={() => {
+                                setShowConfirmation(true);
+                                setConfirmationConfig({
+                                    message: `Are you sure you want to approve ${Data.athleteName}'s application?`,
+                                    confirmFunction: () => {
+                                        console.log("Approving:", Data.regNo);
+                                        handleApprove(Data.regNo);
+                                    },
+                                });
+                            }}
+                            className="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-800 font-medium"
+                        >
                             <i className="fas fa-check mr-1"></i>
                             <span>Mark Approved</span>
                         </button>
-                        <button className="bg-red-600 text-white px-3 py-1 rounded-full hover:bg-red-800 ml-2">
+                        <button
+                            onClick={() => {
+                                setShowConfirmation(true);
+                                setConfirmationConfig({
+                                    message: `Are you sure you want to reject ${Data.athleteName}'s application?`,
+                                    confirmFunction: () => {
+                                        handleReject(Data.regNo);
+                                    },
+                                });
+                            }}
+                            className="bg-red-600 text-white px-3 py-1 rounded-full hover:bg-red-800 ml-2"
+                        >
                             <i className="fas fa-times mr-1"></i>
                             Reject
                         </button>
                     </>
                 )}
 
-                {Data.status === "approved" && (
+                {/* {Data.status === "approved" && (
                     <button className="bg-yellow-600 text-white px-3 py-1 rounded-full hover:bg-yellow-800 ml-2">
                         <i className="fas fa-redo mr-1"></i>
                         Resend ID Card
                     </button>
-                )}
+                )} */}
             </div>
         </div>
     );
@@ -103,10 +218,16 @@ function AtheleteCard({ Data }) {
 
 AtheleteTable.propTypes = {
     atheleteData: propTypes.array,
+    handleApprove: propTypes.func,
+    handleReject: propTypes.func,
 };
 
 AtheleteCard.propTypes = {
     Data: propTypes.object,
+    setShowConfirmation: propTypes.func,
+    setConfirmationConfig: propTypes.func,
+    handleApprove: propTypes.func,
+    handleReject: propTypes.func,
 };
 
 const DocumentFields = [

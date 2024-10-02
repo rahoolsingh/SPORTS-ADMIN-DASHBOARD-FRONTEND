@@ -33,7 +33,12 @@ function AtheletePendingRecords() {
         handleShowAllRecords();
     }, []);
 
-    return <AtheleteTable atheleteData={atheleteData} />;
+    return (
+        <AtheleteTable
+            atheleteData={atheleteData}
+            setAtheleteData={setAtheleteData}
+        />
+    );
 }
 
 export default AtheletePendingRecords;
