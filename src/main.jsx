@@ -5,6 +5,7 @@ import App from "./App.jsx";
 import EditCoach from "./EditCoach.jsx";
 import EditAthelete from "./EditAthelete.jsx";
 import "./index.css";
+import NotFound from "./components/NotFound/NotFound.jsx";
 
 createRoot(document.getElementById("root")).render(
     <StrictMode>
@@ -13,6 +14,7 @@ createRoot(document.getElementById("root")).render(
                 <Route path="/" element={<App />} />
                 <Route path="/edit-coach/:regNo" element={<EditCoach />} />
                 <Route path="/edit-athlete/:regNo" element={<EditAthelete />} />
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
     </StrictMode>
