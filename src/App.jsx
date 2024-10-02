@@ -3,6 +3,8 @@ import Login from "./components/Login/Login";
 import AtheleteAllRecords from "./components/Athelete/AtheleteAllRecords";
 import Header from "./components/Header/Header";
 import AtheletePendingRecords from "./components/Athelete/PendingAtheleteRecords";
+import CoachAllRecords from "./components/Coach/CoachAllRecords";
+import CoachPendingRecords from "./components/Coach/PendingCoachRecords";
 
 const Auth = () => {
     // const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -27,6 +29,12 @@ const Auth = () => {
 
             {stage === "login" && page === "pending-atheletes" && (
                 <AtheletePendingRecords />
+            )}
+
+            {stage === "login" && page === "all-coaches" && <CoachAllRecords />}
+
+            {stage === "login" && page === "pending-coaches" && (
+                <CoachPendingRecords />
             )}
 
             <footer className="p-4 bg-gray-800 text-gray-50 w-full mt-4">

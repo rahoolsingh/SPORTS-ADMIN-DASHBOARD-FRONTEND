@@ -6,7 +6,7 @@ import axios from "axios";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-function AtheleteTable({ atheleteData, setAtheleteData }) {
+function CoachTable({ coachData, setCoachData }) {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [confirmationConfig, setConfirmationConfig] = useState({});
     const [statusMessage, setStatusMessage] = useState(""); // State for status message
@@ -23,7 +23,7 @@ function AtheleteTable({ atheleteData, setAtheleteData }) {
     const handleApprove = async (regNo) => {
         try {
             const response = await axios.put(
-                `${BACKEND_URL}/athelete/mark-approved/${regNo}`,
+                `${BACKEND_URL}/coach/mark-approved/${regNo}`,
                 {},
                 {
                     headers: {
@@ -32,7 +32,7 @@ function AtheleteTable({ atheleteData, setAtheleteData }) {
                 }
             );
             console.log("Approved:", response.data);
-            setAtheleteData((prevData) =>
+            setCoachData((prevData) =>
                 prevData.filter((data) => data.regNo !== regNo)
             );
             showStatusCard(`Approved: ${response.data.message}`, "success"); // Make sure the response contains a message
@@ -53,7 +53,7 @@ function AtheleteTable({ atheleteData, setAtheleteData }) {
     const handleReject = async (regNo) => {
         try {
             const response = await axios.put(
-                `${BACKEND_URL}/athelete/mark-rejected/${regNo}`,
+                `${BACKEND_URL}/coach/mark-rejected/${regNo}`,
                 {},
                 {
                     headers: {
@@ -61,7 +61,7 @@ function AtheleteTable({ atheleteData, setAtheleteData }) {
                     },
                 }
             );
-            setAtheleteData((prevData) =>
+            setCoachData((prevData) =>
                 prevData.filter((data) => data.regNo !== regNo)
             );
             console.log("Rejected:", response.data);
@@ -103,12 +103,12 @@ function AtheleteTable({ atheleteData, setAtheleteData }) {
             <p>
                 Live Count:{" "}
                 <span className="text-yellow-500 font-semibold">
-                    {atheleteData.length}
+                    {coachData.length}
                 </span>
             </p>
 
-            {atheleteData.map((data) => (
-                <AtheleteCard
+            {coachData.map((data) => (
+                <CoachCard
                     Data={data}
                     key={data.regNo}
                     setShowConfirmation={setShowConfirmation}
@@ -121,14 +121,14 @@ function AtheleteTable({ atheleteData, setAtheleteData }) {
     );
 }
 
-export default AtheleteTable;
+export default CoachTable;
 
-AtheleteTable.propTypes = {
-    atheleteData: propTypes.array,
-    setAtheleteData: propTypes.func,
+CoachTable.propTypes = {
+    coachData: propTypes.array,
+    setCoachData: propTypes.func,
 };
 
-function AtheleteCard({
+function CoachCard({
     Data,
     setShowConfirmation,
     setConfirmationConfig,
@@ -214,7 +214,7 @@ function AtheleteCard({
                             onClick={() => {
                                 setShowConfirmation(true);
                                 setConfirmationConfig({
-                                    message: `Are you sure you want to approve ${Data.athleteName}'s application?`,
+                                    message: `Are you sure you want to approve ${Data.coachName}'s application?`,
                                     confirmFunction: () => {
                                         console.log("Approving:", Data.regNo);
                                         handleApprove(Data.regNo);
@@ -230,7 +230,7 @@ function AtheleteCard({
                             onClick={() => {
                                 setShowConfirmation(true);
                                 setConfirmationConfig({
-                                    message: `Are you sure you want to reject ${Data.athleteName}'s application?`,
+                                    message: `Are you sure you want to reject ${Data.coachName}'s application?`,
                                     confirmFunction: () => {
                                         handleReject(Data.regNo);
                                     },
@@ -243,25 +243,18 @@ function AtheleteCard({
                         </button>
                     </>
                 )}
-
-                {/* {Data.status === "approved" && (
-                    <button className="bg-yellow-600 text-white px-3 py-1 rounded-full hover:bg-yellow-800 ml-2">
-                        <i className="fas fa-redo mr-1"></i>
-                        Resend ID Card
-                    </button>
-                )} */}
             </div>
         </div>
     );
 }
 
-AtheleteTable.propTypes = {
-    atheleteData: propTypes.array,
+CoachTable.propTypes = {
+    coachData: propTypes.array,
     handleApprove: propTypes.func,
     handleReject: propTypes.func,
 };
 
-AtheleteCard.propTypes = {
+CoachCard.propTypes = {
     Data: propTypes.object,
     setShowConfirmation: propTypes.func,
     setConfirmationConfig: propTypes.func,
@@ -275,7 +268,11 @@ const DocumentFields = [
         label: "Photo",
     },
     {
-        name: "certificate",
+        name: "blackBeltCertificate",
+        label: "Black Belt Certificate",
+    },
+    {
+        name: "birthCertificate",
         label: "Birth Certificate",
     },
     {
@@ -298,8 +295,8 @@ const fields = [
         label: "Tracking Number",
     },
     {
-        name: "athleteName",
-        label: "Athlete Name",
+        name: "playerName",
+        label: "Coach Name",
     },
     {
         name: "fatherName",
@@ -342,12 +339,8 @@ const fields = [
         label: "Pincode",
     },
     {
-        name: "academyName",
-        label: "Academy Name",
-    },
-    {
-        name: "coachName",
-        label: "Coach Name",
+        name: "panNumber",
+        label: "PAN Number",
     },
     {
         name: "status",

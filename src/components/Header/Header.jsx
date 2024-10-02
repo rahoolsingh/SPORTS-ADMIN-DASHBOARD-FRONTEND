@@ -27,6 +27,19 @@ function Header({ stage, setStage, page, setPage }) {
                 api: "/pending-athletes",
                 countApi: "athelete/pending-count",
             },
+
+            {
+                label: "All Coaches Records",
+                value: "all-coaches",
+                api: "/all-coaches",
+                countApi: "coach/all-count",
+            },
+            {
+                label: "Pending Coaches",
+                value: "pending-coaches",
+                api: "/pending-coaches",
+                countApi: "coach/pending-count",
+            },
         ],
         []
     );
