@@ -136,8 +136,9 @@ function AtheleteCard({
     handleReject,
 }) {
     return (
-        <div
-            className={`
+        <>
+            <div
+                className={`
             ${
                 Data.status === "pending"
                     ? "border-yellow-400 bg-yellow-400"
@@ -146,67 +147,67 @@ function AtheleteCard({
                     : "border-red-400 bg-red-400"
             }
             bg-opacity-10
-            w-full p-4 border bg-slate-800 rounded-lg mt-4 grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6 gap-y-3 gap-x-2
+            w-full p-4 border bg-slate-800 mt-4 grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6 gap-y-3 gap-x-2
         `}
-        >
-            <div className="col-span-1">
-                <p className="font-semibold">Status</p>
-                <p className="space-x-1">
-                    <span
-                        className={`${
-                            Data.status === "pending"
-                                ? "bg-yellow-500"
-                                : Data.status === "approved"
-                                ? "bg-green-500"
-                                : "bg-red-500"
-                        } w-2 h-2 rounded-full inline-block`}
-                    ></span>
+            >
+                <div className="col-span-1">
+                    <p className="font-semibold">Status</p>
+                    <p className="space-x-1">
+                        <span
+                            className={`${
+                                Data.status === "pending"
+                                    ? "bg-yellow-500"
+                                    : Data.status === "approved"
+                                    ? "bg-green-500"
+                                    : "bg-red-500"
+                            } w-2 h-2 rounded-full inline-block`}
+                        ></span>
 
-                    <span
-                        className={`${
-                            Data.status === "pending"
-                                ? "text-yellow-500"
-                                : Data.status === "approved"
-                                ? "text-green-500"
-                                : "text-red-500"
-                        } text-xs`}
-                    >
-                        {String(Data.status).toUpperCase()}
-                    </span>
-                </p>
-            </div>
-            {fields.map((field) => (
-                <div className="col-span-1" key={field.name}>
-                    <p className="font-semibold">{field.label}</p>
-                    <p className="text-xs text-slate-50 break-all">
-                        {String(Data[field.name]).toUpperCase()}
+                        <span
+                            className={`${
+                                Data.status === "pending"
+                                    ? "text-yellow-500"
+                                    : Data.status === "approved"
+                                    ? "text-green-500"
+                                    : "text-red-500"
+                            } text-xs`}
+                        >
+                            {String(Data.status).toUpperCase()}
+                        </span>
                     </p>
                 </div>
-            ))}
-
-            {DocumentFields.map((field) => (
-                <div className="col-span-1" key={field.name}>
-                    <p className="font-semibold">{field.label}</p>
-                    {Data[field.name] ? (
-                        <a
-                            href={Data[field.name]}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-sm text-blue-500"
-                        >
-                            View Document
-                        </a>
-                    ) : (
-                        <p className="text-xs text-red-500">
-                            ERROR: Invalid Document
-                            <span className="text-xs text-red-500 block">
-                                ID Card will not be generated
-                            </span>
+                {fields.map((field) => (
+                    <div className="col-span-1" key={field.name}>
+                        <p className="font-semibold">{field.label}</p>
+                        <p className="text-xs text-slate-50 break-all">
+                            {String(Data[field.name]).toUpperCase()}
                         </p>
-                    )}
-                </div>
-            ))}
+                    </div>
+                ))}
 
+                {DocumentFields.map((field) => (
+                    <div className="col-span-1" key={field.name}>
+                        <p className="font-semibold">{field.label}</p>
+                        {Data[field.name] ? (
+                            <a
+                                href={Data[field.name]}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-sm text-blue-500"
+                            >
+                                View Document
+                            </a>
+                        ) : (
+                            <p className="text-xs text-red-500">
+                                ERROR: Invalid Document
+                                <span className="text-xs text-red-500 block">
+                                    ID Card will not be generated
+                                </span>
+                            </p>
+                        )}
+                    </div>
+                ))}
+            </div>
             <div className="md:col-span-2 flex justify-end items-center text-sm">
                 {Data.status === "pending" && (
                     <>
@@ -221,7 +222,7 @@ function AtheleteCard({
                                     },
                                 });
                             }}
-                            className="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-800 font-medium"
+                            className="bg-green-600 text-white px-3 py-1 rounded-b hover:bg-green-800 font-medium"
                         >
                             <i className="fas fa-check mr-1"></i>
                             <span>Mark Approved</span>
@@ -236,7 +237,7 @@ function AtheleteCard({
                                     },
                                 });
                             }}
-                            className="bg-red-600 text-white px-3 py-1 rounded-full hover:bg-red-800 ml-2"
+                            className="bg-red-600 text-white px-3 py-1 rounded-b hover:bg-red-800 ml-2"
                         >
                             <i className="fas fa-times mr-1"></i>
                             Reject
@@ -244,14 +245,16 @@ function AtheleteCard({
                     </>
                 )}
 
-                {/* {Data.status === "approved" && (
-                    <button className="bg-yellow-600 text-white px-3 py-1 rounded-full hover:bg-yellow-800 ml-2">
-                        <i className="fas fa-redo mr-1"></i>
-                        Resend ID Card
-                    </button>
-                )} */}
+                <a
+                    href={`edit-athlete/${Data.regNo}`}
+                    target="_blank"
+                    className="bg-blue-600 text-white px-3 py-1 rounded-b hover:bg-blue-800 ml-2"
+                >
+                    <i className="fas fa-edit mr-1"></i>
+                    Edit
+                </a>
             </div>
-        </div>
+        </>
     );
 }
 
