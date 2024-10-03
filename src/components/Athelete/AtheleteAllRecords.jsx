@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie"; // Importing js-cookie to manage cookies
 import AtheleteTable from "./AtheleteTable";
+import propTypes from "prop-types";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -40,3 +41,7 @@ function AtheleteAllRecords({ setLoading }) {
 }
 
 export default AtheleteAllRecords;
+
+AtheleteAllRecords.propTypes = {
+    setLoading: propTypes.func.isRequired,
+};

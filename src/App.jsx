@@ -13,6 +13,50 @@ const Auth = () => {
     const [stage, setStage] = useState("not-login");
     const [page, setPage] = useState("pending-atheletes");
     const [loading, setLoading] = useState(false);
+    const [sessionExpiry, setSessionExpiry] = useState("");
+
+    const [sessionDuration, setSessionDuration] = useState({
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+    });
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (sessionExpiry) {
+                const expiryTime = new Date(sessionExpiry).getTime();
+                const currentTime = new Date().getTime();
+                const difference = expiryTime - currentTime;
+
+                const hours = Math.floor(
+                    (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+                );
+                const minutes = Math.floor(
+                    (difference % (1000 * 60 * 60)) / (1000 * 60)
+                );
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                setSessionDuration({
+                    hours,
+                    minutes,
+                    seconds,
+                });
+
+                if (difference < 0) {
+                    clearInterval(interval);
+                    setStage("not-login");
+                    setSessionExpiry("");
+                    setSessionDuration({
+                        hours: 0,
+                        minutes: 0,
+                        seconds: 0,
+                    });
+                }
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [sessionExpiry]);
 
     return (
         <>
@@ -45,8 +89,15 @@ const Auth = () => {
                     setStage={setStage}
                     page={page}
                     setPage={setPage}
+                    sessionDuration={sessionDuration}
                 />
-                {stage === "not-login" && <Login setStage={setStage} />}
+                {stage === "not-login" && (
+                    <Login
+                        setStage={setStage}
+                        setSessionExpiry={setSessionExpiry}
+                        setLoading={setLoading}
+                    />
+                )}
 
                 {stage === "login" && page === "all-atheletes" && (
                     <AtheleteAllRecords setLoading={setLoading} />

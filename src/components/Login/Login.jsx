@@ -3,7 +3,7 @@ import axios from "axios";
 import Cookies from "js-cookie"; // Importing js-cookie to manage cookies
 import propTypes from "prop-types";
 
-function Login({ setStage }) {
+function Login({ setStage, setSessionExpiry }) {
     const [email, setEmail] = useState("rahulksingh3907@gmail.com");
     const [otp, setOtp] = useState("");
     const [otpSent, setOtpSent] = useState(false);
@@ -23,6 +23,7 @@ function Login({ setStage }) {
                     setIsVerified(true);
                     setOtpSent(true);
                     setStage("login");
+                    setSessionExpiry(response.data.sessionExpiry);
                 })
                 .catch((error) => {
                     Cookies.remove("jwt");
@@ -64,6 +65,7 @@ function Login({ setStage }) {
                 const token = response.data.token; // Assuming your backend returns the token
                 Cookies.set("jwt", token, { secure: true, sameSite: "Strict" });
                 setStage("login");
+                setSessionExpiry(response.data.sessionExpiry);
             }
         } catch (error) {
             setErrorMessage("Invalid OTP! Please try again.");
@@ -151,4 +153,5 @@ export default Login;
 
 Login.propTypes = {
     setStage: propTypes.func.isRequired,
+    setSessionExpiry: propTypes.func.isRequired,
 };

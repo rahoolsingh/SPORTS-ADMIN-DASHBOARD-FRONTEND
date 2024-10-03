@@ -5,13 +5,20 @@ import Cookies from "js-cookie";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-function Header({ stage, setStage, page, setPage }) {
+function Header({ stage, setStage, page, setPage, sessionDuration }) {
     const [labelCount, setLabelCount] = useState({
         "all-atheletes": 0,
         "pending-atheletes": 0,
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const formatTimestamp = (duration) => {
+        const { hours, minutes, seconds } = duration;
+        return `${hours.toString().padStart(2, "0")}:${minutes
+            .toString()
+            .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+    };
 
     const pages = useMemo(
         () => [
@@ -86,15 +93,15 @@ function Header({ stage, setStage, page, setPage }) {
     }, [getCount, pages, stage]);
 
     return (
-        <header className="p-4 bg-gray-800 text-gray-50 w-full">
-            <div className="container flex justify-between mx-auto">
+        <header className="p-4 bg-gray-900 text-gray-50 w-full shadow-md">
+            <div className="container flex justify-between items-center mx-auto">
                 {stage === "not-login" && (
                     <div className="mt-2">
-                        <h1 className="text-2xl font-bold">Admin Panel</h1>
+                        <h1 className="text-3xl font-bold">Admin Panel</h1>
                         <p className="text-sm">J&K Taekwondo Association</p>
                     </div>
                 )}
-                <ul className="space-x-2 hidden lg:flex">
+                <ul className="space-x-4 hidden lg:flex">
                     {stage === "login" && loading && (
                         <li className="flex">
                             <span className="text-gray-300">Loading...</span>
@@ -123,7 +130,25 @@ function Header({ stage, setStage, page, setPage }) {
                             </li>
                         ))}
                 </ul>
-                <div className="items-center flex-shrink-0 hidden lg:flex gap-2">
+                <div className="flex items-center gap-4">
+                    <span className="hidden lg:block">Session Duration:</span>
+                    <span
+                        className={`${
+                            sessionDuration.seconds === 0 &&
+                            sessionDuration.hours === 0 &&
+                            sessionDuration.minutes === 0
+                                ? "hidden"
+                                : sessionDuration.minutes < 5
+                                ? "text-red-500 font-bold animate-bounce"
+                                : ""
+                        }`}
+                    >
+                        {formatTimestamp(sessionDuration)}
+                    </span>
+
+                    <span className="hidden lg:block">
+                        {stage === "login" ? "" : "Not Logged In"}
+                    </span>
                     {stage === "login" && (
                         <button
                             onClick={logout}
@@ -135,7 +160,11 @@ function Header({ stage, setStage, page, setPage }) {
                     )}
                 </div>
             </div>
-            {/* {error && <p className="text-red-500 text-center mt-2">{error}</p>} */}
+            {/* {error && (
+                <p className={stage === "not-login" ? "hidden" : "text-red-400 text-center"}>
+                    {error}
+                </p>
+            )} */}
         </header>
     );
 }
@@ -147,4 +176,5 @@ Header.propTypes = {
     setStage: propTypes.func.isRequired,
     page: propTypes.string.isRequired,
     setPage: propTypes.func.isRequired,
+    sessionDuration: propTypes.string,
 };

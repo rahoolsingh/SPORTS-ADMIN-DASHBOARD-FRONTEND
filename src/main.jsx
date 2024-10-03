@@ -2,8 +2,8 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import App from "./App.jsx";
-import EditCoach from "./EditCoach.jsx";
-import EditAthelete from "./EditAthelete.jsx";
+import EditCoach from "./components/EditDetails/EditCoach.jsx";
+import EditAthelete from "./components/EditDetails/EditAthelete.jsx";
 import "./index.css";
 import NotFound from "./components/NotFound/NotFound.jsx";
 
