@@ -101,8 +101,10 @@ function EditAthelete() {
                         className="animate-spin inline-block w-8 h-8 rounded-full border-4 border-b-blue-500"
                         role="status"
                     ></div>
-                    {/* DRS Text fluid animation */}
-                    <div className="text-3xl font-bold text-blue-500">DRS</div>
+                    {/* Veer Rajpoot Text fluid animation */}
+                    <div className="text-3xl font-bold text-blue-500">
+                        Veer Rajpoot
+                    </div>
 
                     <div className="text-3xl font-bold text-blue-500">
                         Technology
