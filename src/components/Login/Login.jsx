@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Link } from "react-router-dom";
 import propTypes from "prop-types";
+import ManageLoginMail from "./ManageLoginMail";
 
-const SignIn = ({ setStage, setSessionExpiry }) => {
+const Login = ({ setStage, setSessionExpiry }) => {
     const [email, setEmail] = useState("rahulksingh3907@gmail.com");
     const [otp, setOtp] = useState("");
     const [otpSent, setOtpSent] = useState(false);
@@ -83,13 +83,11 @@ const SignIn = ({ setStage, setSessionExpiry }) => {
                 <div className="flex flex-wrap items-center">
                     <div className="hidden w-full xl:block xl:w-1/2">
                         <div className="py-17.5 px-26 text-center">
-                            <Link className="mb-5.5 inline-block" to="/">
-                                <img
-                                    className="dark:invert"
-                                    src="https://res.cloudinary.com/dwiouayh7/image/upload/v1728839717/My%20Brand/veerRajpoot_mplaff.png"
-                                    alt="Logo"
-                                />
-                            </Link>
+                            <img
+                                className="dark:invert m-auto"
+                                src="https://res.cloudinary.com/dwiouayh7/image/upload/v1728839717/My%20Brand/veerRajpoot_mplaff.png"
+                                alt="Logo"
+                            />
                             <p className="text-center text-red-600 font-bold">
                                 INFORMATION
                             </p>
@@ -99,16 +97,26 @@ const SignIn = ({ setStage, setSessionExpiry }) => {
                                 data with your email and OTP. But in production
                                 only authorized users can access the data.
                             </p>
+
+                            <ManageLoginMail BACKEND_URL={BACKEND_URL} />
                         </div>
                     </div>
 
                     <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
                         <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-                            <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 text-center">
+                            <h2 className="md:mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 text-center">
                                 LOGIN TO ADMIN DASHBOARD
                             </h2>
 
-                            <form>
+                            <p className="md:hidden text-xs mb-9 text-red-600 text-justify">
+                                You are on mobile view. Please open this page on
+                                a desktop to see add your email in the
+                                authorized list in order to receive OTP. You can
+                                also use "Show desktop site" option in your
+                                browser.
+                            </p>
+
+                            <form className="space-y-6 w-full">
                                 <div className="mb-4">
                                     <label className="mb-2.5 block font-medium text-black dark:text-white">
                                         Email
@@ -170,7 +178,7 @@ const SignIn = ({ setStage, setSessionExpiry }) => {
                                 </div>
 
                                 {errorMessage && (
-                                    <p className="w-full text-center text-red-600">
+                                    <p className="text-center text-red-600">
                                         {errorMessage}
                                     </p>
                                 )}
@@ -183,9 +191,9 @@ const SignIn = ({ setStage, setSessionExpiry }) => {
     );
 };
 
-export default SignIn;
+export default Login;
 
-SignIn.propTypes = {
+Login.propTypes = {
     setStage: propTypes.func.isRequired,
     setSessionExpiry: propTypes.func.isRequired,
 };
