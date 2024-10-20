@@ -5,7 +5,7 @@ import propTypes from "prop-types";
 import ManageLoginMail from "./ManageLoginMail";
 
 const Login = ({ setStage, setSessionExpiry }) => {
-    const [email, setEmail] = useState("rahulksingh3907@gmail.com");
+    const [email, setEmail] = useState("");
     const [otp, setOtp] = useState("");
     const [otpSent, setOtpSent] = useState(false);
     // const [isVerified, setIsVerified] = useState(false);
