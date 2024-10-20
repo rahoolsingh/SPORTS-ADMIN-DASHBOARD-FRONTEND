@@ -34,7 +34,7 @@ function CoachAllRecords({ setLoading }) {
         handleShowAllRecords();
     }, []);
 
-    return <CoachTable coachData={coachData} />;
+    return <CoachTable coachData={coachData} setCoachData={setCoachData} />;
 }
 
 export default CoachAllRecords;

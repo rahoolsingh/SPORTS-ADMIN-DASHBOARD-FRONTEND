@@ -163,6 +163,12 @@ function Header({ stage, setStage, page, setPage, sessionDuration }) {
                     </div>
                 )}
             </div>
+            {stage === "login" && (
+                <p className="text-center text-sm text-gray-300 mt-2">
+                    You are currently in test mode. Update the email in any
+                    record below to test the ID card generation.
+                </p>
+            )}
         </header>
     );
 }
