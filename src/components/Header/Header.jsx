@@ -120,11 +120,6 @@ function Header({ stage, setStage, page, setPage, sessionDuration }) {
                                     aria-label={`View ${label.label}`}
                                 >
                                     {label.label}
-                                    {labelCount[label.value] > 0 && (
-                                        <p className="text-xs text-left">
-                                            Records: {labelCount[label.value]}
-                                        </p>
-                                    )}
                                 </button>
                             </li>
                         ))}
