@@ -98,7 +98,6 @@ function Header({ stage, setStage, page, setPage, sessionDuration }) {
                 {stage === "not-login" && (
                     <div className="mt-2">
                         <h1 className="text-3xl font-bold">Admin Panel</h1>
-                        <p className="text-sm">J&K Taekwondo Association</p>
                     </div>
                 )}
                 <ul className="space-x-4 hidden lg:flex">
@@ -130,41 +129,40 @@ function Header({ stage, setStage, page, setPage, sessionDuration }) {
                             </li>
                         ))}
                 </ul>
-                <div className="flex items-center gap-4">
-                    <span className="hidden lg:block">Session Duration:</span>
-                    <span
-                        className={`${
-                            sessionDuration.seconds === 0 &&
-                            sessionDuration.hours === 0 &&
-                            sessionDuration.minutes === 0
-                                ? "hidden"
-                                : sessionDuration.minutes < 5
-                                ? "text-red-500 font-bold animate-bounce"
-                                : ""
-                        }`}
-                    >
-                        {formatTimestamp(sessionDuration)}
-                    </span>
-
-                    <span className="hidden lg:block">
-                        {stage === "login" ? "" : "Not Logged In"}
-                    </span>
-                    {stage === "login" && (
-                        <button
-                            onClick={logout}
-                            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300"
-                            aria-label="Logout"
+                {sessionDuration && stage === "login" && (
+                    <div className="flex items-center gap-4">
+                        <span className="hidden lg:block">
+                            Session Duration:
+                        </span>
+                        <span
+                            className={`${
+                                sessionDuration.seconds === 0 &&
+                                sessionDuration.hours === 0 &&
+                                sessionDuration.minutes === 0
+                                    ? "hidden"
+                                    : sessionDuration.minutes < 5
+                                    ? "text-red-500 font-bold animate-bounce"
+                                    : ""
+                            }`}
                         >
-                            Logout
-                        </button>
-                    )}
-                </div>
+                            {formatTimestamp(sessionDuration)}
+                        </span>
+
+                        <span className="hidden lg:block">
+                            {stage === "login" ? "" : "Not Logged In"}
+                        </span>
+                        {stage === "login" && (
+                            <button
+                                onClick={logout}
+                                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300"
+                                aria-label="Logout"
+                            >
+                                Logout
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
-            {/* {error && (
-                <p className={stage === "not-login" ? "hidden" : "text-red-400 text-center"}>
-                    {error}
-                </p>
-            )} */}
         </header>
     );
 }

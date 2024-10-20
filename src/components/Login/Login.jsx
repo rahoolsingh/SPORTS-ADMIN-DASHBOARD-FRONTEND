@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Cookies from "js-cookie"; // Importing js-cookie to manage cookies
+import Cookies from "js-cookie";
+import { Link } from "react-router-dom";
 import propTypes from "prop-types";
 
-function Login({ setStage, setSessionExpiry }) {
+const SignIn = ({ setStage, setSessionExpiry }) => {
     const [email, setEmail] = useState("rahulksingh3907@gmail.com");
     const [otp, setOtp] = useState("");
     const [otpSent, setOtpSent] = useState(false);
-    const [isVerified, setIsVerified] = useState(false);
+    // const [isVerified, setIsVerified] = useState(false);
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -20,16 +21,17 @@ function Login({ setStage, setSessionExpiry }) {
             axios
                 .post(`${BACKEND_URL}/auth/continue-session`)
                 .then((response) => {
-                    setIsVerified(true);
+                    // setIsVerified(true);
                     setOtpSent(true);
                     setStage("login");
                     setSessionExpiry(response.data.sessionExpiry);
                 })
                 .catch((error) => {
                     Cookies.remove("jwt");
+                    console.error("Error continuing session:", error.message);
                 });
         }
-    }, []);
+    });
 
     const handleSendOtp = async () => {
         setLoading(true);
@@ -61,7 +63,7 @@ function Login({ setStage, setSessionExpiry }) {
                 { email, otp }
             );
             if (response.status === 200) {
-                setIsVerified(true);
+                // setIsVerified(true);
                 const token = response.data.token; // Assuming your backend returns the token
                 Cookies.set("jwt", token, { secure: true, sameSite: "Strict" });
                 setStage("login");
@@ -69,89 +71,121 @@ function Login({ setStage, setSessionExpiry }) {
             }
         } catch (error) {
             setErrorMessage("Invalid OTP! Please try again.");
+            console.error("Error verifying OTP:", error.message);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="flex items-center justify-center w-full">
-            <div className="bg-white dark:bg-gray-800 p-8 rounded shadow-md w-full max-w-md">
-                <h2 className="text-3xl font-bold mb-6 text-center text-white">
-                    Admin Login
-                </h2>
-                {errorMessage && (
-                    <p className="text-red-500 text-center mb-4">
-                        {errorMessage}
-                    </p>
-                )}
-                {!otpSent ? (
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            handleSendOtp();
-                        }}
-                    >
-                        <input
-                            type="email"
-                            placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="p-4 mb-4 w-full border border-gray-300 rounded text-black dark:text-white bg-gray-50 dark:bg-gray-700 focus:outline-none focus:border-blue-500"
-                            required
-                        />
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className={`w-full py-3 ${
-                                loading ? "bg-gray-400" : "bg-blue-600"
-                            } text-white rounded hover:bg-blue-700 transition-colors duration-300`}
-                        >
-                            {loading ? "Sending..." : "Send OTP"}
-                        </button>
-                    </form>
-                ) : (
-                    !isVerified && (
-                        <form
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                handleVerifyOtp();
-                            }}
-                        >
-                            <h2 className="text-2xl font-bold mb-4 text-center text-black dark:text-white">
-                                Enter OTP
-                            </h2>
-                            <p className="mb-4 text-center text-gray-600 dark:text-gray-400">
-                                OTP has been sent to {email}
+        <>
+            <div className="bg-white dark:bg-boxdark">
+                <div className="flex flex-wrap items-center">
+                    <div className="hidden w-full xl:block xl:w-1/2">
+                        <div className="py-17.5 px-26 text-center">
+                            <Link className="mb-5.5 inline-block" to="/">
+                                <img
+                                    className="dark:invert"
+                                    src="https://res.cloudinary.com/dwiouayh7/image/upload/v1728839717/My%20Brand/veerRajpoot_mplaff.png"
+                                    alt="Logo"
+                                />
+                            </Link>
+                            <p className="text-center text-red-600 font-bold">
+                                INFORMATION
                             </p>
-                            <input
-                                type="text"
-                                placeholder="Enter OTP"
-                                value={otp}
-                                onChange={(e) => setOtp(e.target.value)}
-                                className="p-4 mb-4 w-full border border-gray-300 rounded text-black dark:text-white bg-gray-50 dark:bg-gray-700 focus:outline-none focus:border-blue-500"
-                                required
-                            />
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className={`w-full py-3 ${
-                                    loading ? "bg-gray-400" : "bg-green-600"
-                                } text-white rounded hover:bg-green-700 transition-colors duration-300`}
-                            >
-                                {loading ? "Verifying..." : "Verify OTP"}
-                            </button>
-                        </form>
-                    )
-                )}
+
+                            <p className="text-center text-black dark:text-white text-sm">
+                                This is a test version so you can access dummy
+                                data with your email and OTP. But in production
+                                only authorized users can access the data.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
+                        <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
+                            <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 text-center">
+                                LOGIN TO ADMIN DASHBOARD
+                            </h2>
+
+                            <form>
+                                <div className="mb-4">
+                                    <label className="mb-2.5 block font-medium text-black dark:text-white">
+                                        Email
+                                    </label>
+                                    <div className="relative">
+                                        <input
+                                            type="email"
+                                            placeholder="Enter your email"
+                                            className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary disabled:opacity-50 disabled:bg-gray-200"
+                                            value={email}
+                                            onChange={(e) =>
+                                                setEmail(e.target.value)
+                                            }
+                                            required
+                                            disabled={otpSent}
+                                        />
+                                    </div>
+                                </div>
+
+                                {otpSent && (
+                                    <div className="mb-6">
+                                        <label className="mb-2.5 block font-medium text-black dark:text-white">
+                                            OTP
+                                        </label>
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                placeholder="Enter OTP"
+                                                className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                                value={otp}
+                                                onChange={(e) =>
+                                                    setOtp(e.target.value)
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className="mb-5">
+                                    <input
+                                        type="submit"
+                                        value={
+                                            otpSent
+                                                ? loading
+                                                    ? "Verifying..."
+                                                    : "Verify OTP"
+                                                : loading
+                                                ? "Sending OTP..."
+                                                : "Send OTP"
+                                        }
+                                        onClick={
+                                            otpSent
+                                                ? handleVerifyOtp
+                                                : handleSendOtp
+                                        }
+                                        className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 transition hover:bg-opacity-90"
+                                        disabled={loading}
+                                    />
+                                </div>
+
+                                {errorMessage && (
+                                    <p className="w-full text-center text-red-600">
+                                        {errorMessage}
+                                    </p>
+                                )}
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </>
     );
-}
+};
 
-export default Login;
+export default SignIn;
 
-Login.propTypes = {
+SignIn.propTypes = {
     setStage: propTypes.func.isRequired,
     setSessionExpiry: propTypes.func.isRequired,
 };

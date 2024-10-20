@@ -179,7 +179,7 @@ function AtheleteCard({
                 {fields.map((field) => (
                     <div className="col-span-1" key={field.name}>
                         <p className="font-semibold">{field.label}</p>
-                        <p className="text-xs text-slate-50 break-all">
+                        <p className="text-xs break-all">
                             {String(Data[field.name]).toUpperCase()}
                         </p>
                     </div>

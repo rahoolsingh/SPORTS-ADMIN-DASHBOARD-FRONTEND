@@ -131,10 +131,10 @@ function EditAthelete() {
                     </button>
                 </h3>
                 <div className="mt-4">
-                    <p className="text-center">Powered by DRS Technology</p>
+                    <p className="text-center">Powered by Veer Rajpoot</p>
                     <img
                         className="h-14 mx-auto invert"
-                        src="https://raw.githubusercontent.com/rahoolsingh/Backend/refs/heads/master/public/assets/logo-white-border.png"
+                        src="https://res.cloudinary.com/dwiouayh7/image/upload/v1728839717/My%20Brand/veerRajpoot_mplaff.png"
                         alt="Data Updated Successfully"
                     />
                 </div>
@@ -154,10 +154,10 @@ function EditAthelete() {
                     is not expired on the dashboard
                 </p>
                 <div className="mt-4">
-                    <p className="text-center">Powered by DRS Technology</p>
+                    <p className="text-center">Powered by Veer Rajpoot</p>
                     <img
                         className="h-14 mx-auto invert"
-                        src="https://raw.githubusercontent.com/rahoolsingh/Backend/refs/heads/master/public/assets/logo-white-border.png"
+                        src="https://res.cloudinary.com/dwiouayh7/image/upload/v1728839717/My%20Brand/veerRajpoot_mplaff.png"
                         alt="Data Updated Successfully"
                     />
                 </div>
@@ -174,10 +174,10 @@ function EditAthelete() {
                     Expired
                 </h3>
                 <div className="mt-4">
-                    <p className="text-center">Powered by DRS Technology</p>
+                    <p className="text-center">Powered by Veer Rajpoot</p>
                     <img
                         className="h-14 mx-auto invert"
-                        src="https://raw.githubusercontent.com/rahoolsingh/Backend/refs/heads/master/public/assets/logo-white-border.png"
+                        src="https://res.cloudinary.com/dwiouayh7/image/upload/v1728839717/My%20Brand/veerRajpoot_mplaff.png"
                         alt="No data found"
                     />
                 </div>
@@ -366,7 +366,7 @@ function EditAthelete() {
                     Your database plan does not support editing of images.
                     Please upgrade to premium to edit images. Starting at $199.
                     <br />
-                    Contact DRS Technology for more information.
+                    Contact Veer Rajpoot for more information.
                 </p>
                 <div className="grid grid-cols-5 gap-6">
                     {documentFields.map((field) => (

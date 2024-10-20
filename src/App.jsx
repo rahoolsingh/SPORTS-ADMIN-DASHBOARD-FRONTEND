@@ -115,15 +115,13 @@ const Auth = () => {
                     <CoachPendingRecords setLoading={setLoading} />
                 )}
 
-                <footer className="p-4 bg-gray-800 text-gray-50 w-full mt-4">
-                    <img
-                        src="https://raw.githubusercontent.com/rahoolsingh/Backend/refs/heads/master/public/assets/logo-white-border.png"
-                        alt="logo"
-                        className="h-full bg-white max-h-12 m-auto"
-                    />
-                    <div className="container mx-auto">
-                        <p className="text-center text-sm mt-2">
-                            Made with ❤️ by DRS Technology
+                <footer className="p-4 dark:text-gray-50 w-full mt-4">
+                    <div className="ml-auto w-full">
+                        <p className="text-right text-sm mt-2">
+                            Made with ❤️ by Veer Rajpoot
+                            <span className="text-xs ml-2 text-gray-400">
+                                {new Date().getFullYear()}
+                            </span>
                         </p>
                     </div>
                 </footer>
