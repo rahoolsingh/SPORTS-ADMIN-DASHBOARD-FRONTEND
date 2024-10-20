@@ -355,14 +355,8 @@ function EditCoach() {
                         </div>
                     ))}
                 </div>
-                <p className="text-center text-white">Documents View Only</p>
+                <p className="text-center text-white">Documents (View Only)</p>
 
-                <p className="text-center text-red-500 my-8">
-                    Your database plan does not support editing of images.
-                    Please upgrade to premium to edit images. Starting at $199.
-                    <br />
-                    Contact Veer Rajpoot for more information.
-                </p>
                 <div className="grid grid-cols-5 gap-6">
                     {documentFields.map((field) => (
                         <div key={field.name} className="mb-4">

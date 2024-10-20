@@ -188,6 +188,14 @@ function AtheleteCard({
                 {DocumentFields.map((field) => (
                     <div className="col-span-1" key={field.name}>
                         <p className="font-semibold">{field.label}</p>
+                        {/* small preview thumbnial */}
+                        {Data[field.name] && (
+                            <img
+                                src={Data[field.name]}
+                                alt="preview"
+                                className="h-16 object-cover mt-2"
+                            />
+                        )}
                         {Data[field.name] ? (
                             <a
                                 href={Data[field.name]}
