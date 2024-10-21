@@ -19,6 +19,7 @@ function ConfirmationPopup({ message, confirmFunction, setShowConfirmation }) {
                         onClick={() => {
                             setShowConfirmation(false);
                         }}
+                        className=" text-white px-4 py-2 "
                     >
                         No (Don't Update)
                     </button>
