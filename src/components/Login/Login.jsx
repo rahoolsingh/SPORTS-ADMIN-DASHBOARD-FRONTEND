@@ -85,11 +85,10 @@ const Login = ({ setStage, setSessionExpiry }) => {
                             </h2>
 
                             <p className="md:hidden text-xs mb-9 text-red-600 text-justify">
-                                You are on mobile view. Please open this page on
-                                a desktop to see add your email in the
-                                authorized list in order to receive OTP. You can
-                                also use "Show desktop site" option in your
-                                browser.
+                                This is a test version of the admin dashboard.
+                                It is not optimized for mobile view. We
+                                recommend using a bigger screen for better user
+                                experience.
                             </p>
 
                             <form className="space-y-6 w-full">
