@@ -2,6 +2,7 @@ import axios from "axios";
 import propTypes from "prop-types";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import Cookies from "js-cookie";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"; // Import hamburger and close icons
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -12,6 +13,8 @@ function Header({ stage, setStage, page, setPage, sessionDuration }) {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // For mobile menu toggle
 
     const formatTimestamp = (duration) => {
         const { hours, minutes, seconds } = duration;
@@ -34,7 +37,6 @@ function Header({ stage, setStage, page, setPage, sessionDuration }) {
                 api: "/pending-athletes",
                 countApi: "athelete/pending-count",
             },
-
             {
                 label: "All Coaches Records",
                 value: "all-coaches",
@@ -93,76 +95,129 @@ function Header({ stage, setStage, page, setPage, sessionDuration }) {
     }, [getCount, pages, stage]);
 
     return (
-        <header className="p-4 bg-gray-900 text-gray-50 w-full shadow-md">
-            <div className="container flex justify-between items-center mx-auto">
-                {stage === "not-login" && (
-                    <div className="mt-2">
-                        <h1 className="text-3xl font-bold">Admin Panel</h1>
+        <header className="bg-white w-full">
+            <div className="mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex h-16 items-center justify-between">
+                    <div className="flex-1 md:flex md:items-center md:gap-12">
+                        <a className="block text-teal-600" href="#">
+                            <span className="sr-only">Home</span>
+                            <img src="/logo.png" alt="Logo" className="h-8" />
+                        </a>
                     </div>
-                )}
-                <ul className="space-x-4 hidden lg:flex">
-                    {stage === "login" && loading && (
-                        <li className="flex">
-                            <span className="text-gray-300">Loading...</span>
-                        </li>
-                    )}
-                    {stage === "login" &&
-                        !loading &&
-                        pages.map((label) => (
-                            <li className="flex" key={label.value}>
-                                <button
-                                    onClick={() => setPage(label.value)}
-                                    className={`${
-                                        label.value === page
-                                            ? "bg-gray-700"
-                                            : "bg-gray-800"
-                                    } px-4 py-2 text-white rounded hover:bg-gray-700/30 transition duration-300`}
-                                    aria-label={`View ${label.label}`}
-                                >
-                                    {label.label}
-                                </button>
-                            </li>
-                        ))}
-                </ul>
-                {sessionDuration && stage === "login" && (
-                    <div className="flex items-center gap-4">
-                        <span className="hidden lg:block">
-                            Session Duration:
-                        </span>
-                        <span
-                            className={`${
-                                sessionDuration.seconds === 0 &&
-                                sessionDuration.hours === 0 &&
-                                sessionDuration.minutes === 0
-                                    ? "hidden"
-                                    : sessionDuration.minutes < 5
-                                    ? "text-red-500 font-bold animate-bounce"
-                                    : ""
-                            }`}
-                        >
-                            {formatTimestamp(sessionDuration)}
-                        </span>
 
-                        <span className="hidden lg:block">
-                            {stage === "login" ? "" : "Not Logged In"}
-                        </span>
-                        {stage === "login" && (
-                            <button
-                                onClick={logout}
-                                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300"
-                                aria-label="Logout"
+                    {stage === "login" && (
+                        <div className="md:flex md:items-center md:gap-12">
+                            {/* Page Navigation */}
+                            <nav
+                                aria-label="Global"
+                                className="hidden md:block"
                             >
-                                Logout
+                                <ul className="flex items-center gap-6 text-sm">
+                                    {pages.map((navPage) => (
+                                        <li key={navPage.value}>
+                                            <button
+                                                className={`${
+                                                    page === navPage.value
+                                                        ? "text-teal-600"
+                                                        : "text-gray-600"
+                                                }`}
+                                                onClick={() =>
+                                                    setPage(navPage.value)
+                                                }
+                                            >
+                                                {navPage.label} (
+                                                {labelCount[navPage.value]})
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </nav>
+
+                            {/* Profile Menu */}
+
+                            <div className="relative flex ">
+                                <button
+                                    onClick={logout}
+                                    className="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-red-700 hover:bg-red-50"
+                                    role="menuitem"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth="1.5"
+                                        stroke="currentColor"
+                                        className="h-4 w-4"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+                                        />
+                                    </svg>
+                                    Logout
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Session Duration Display */}
+                    {sessionDuration && stage === "login" && (
+                        <div className="hidden md:block text-gray-600">
+                            Session Time: {formatTimestamp(sessionDuration)}
+                        </div>
+                    )}
+
+                    {/* Mobile Menu Button */}
+                    <div className="md:hidden flex items-center">
+                        <button
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            className="text-gray-600 hover:text-gray-900"
+                        >
+                            {mobileMenuOpen ? (
+                                <XMarkIcon className="h-6 w-6" />
+                            ) : (
+                                <Bars3Icon className="h-6 w-6" />
+                            )}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Mobile Menu */}
+            {mobileMenuOpen && stage === "login" && (
+                <div className="md:hidden">
+                    <div className="space-y-1 px-2 pb-3 pt-2">
+                        {pages.map((navPage) => (
+                            <button
+                                key={navPage.value}
+                                onClick={() => {
+                                    setPage(navPage.value);
+                                    setMobileMenuOpen(false); // Close menu after selecting
+                                }}
+                                className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium ${
+                                    page === navPage.value
+                                        ? "text-teal-600"
+                                        : "text-gray-700"
+                                } hover:bg-gray-100`}
+                            >
+                                {navPage.label} ({labelCount[navPage.value]})
                             </button>
+                        ))}
+                        <button
+                            onClick={logout}
+                            className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-700 hover:bg-gray-100"
+                        >
+                            Logout
+                        </button>
+
+                        {sessionDuration && (
+                            <div className="px-3 py-2 text-sm text-gray-600">
+                                Session Time: {formatTimestamp(sessionDuration)}
+                            </div>
                         )}
                     </div>
-                )}
-            </div>
-            {stage === "login" && (
-                <p className="text-center text-sm text-gray-300 mt-2">
-                    You are currently in test mode. Update the email in any
-                    record below to test the ID card generation.
-                </p>
+                </div>
             )}
         </header>
     );
@@ -175,5 +230,5 @@ Header.propTypes = {
     setStage: propTypes.func.isRequired,
     page: propTypes.string.isRequired,
     setPage: propTypes.func.isRequired,
-    sessionDuration: propTypes.string,
+    sessionDuration: propTypes.object,
 };
