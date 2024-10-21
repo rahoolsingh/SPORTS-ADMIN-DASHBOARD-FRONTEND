@@ -58,6 +58,15 @@ const Auth = () => {
         return () => clearInterval(interval);
     }, [sessionExpiry]);
 
+    useEffect(() => {
+        // call backend to wake up the server
+        fetch(import.meta.env.VITE_BACKEND_URL)
+            .then((res) => res.json())
+            .then((data) => {
+                console.log(data);
+            });
+    }, []);
+
     return (
         <>
             {loading && (
