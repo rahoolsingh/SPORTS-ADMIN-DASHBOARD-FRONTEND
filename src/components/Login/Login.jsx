@@ -8,7 +8,6 @@ const Login = ({ setStage, setSessionExpiry }) => {
     const [email, setEmail] = useState("");
     const [otp, setOtp] = useState("");
     const [otpSent, setOtpSent] = useState(false);
-    // const [isVerified, setIsVerified] = useState(false);
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -21,7 +20,6 @@ const Login = ({ setStage, setSessionExpiry }) => {
             axios
                 .post(`${BACKEND_URL}/auth/continue-session`)
                 .then((response) => {
-                    // setIsVerified(true);
                     setOtpSent(true);
                     setStage("login");
                     setSessionExpiry(response.data.sessionExpiry);
@@ -31,7 +29,7 @@ const Login = ({ setStage, setSessionExpiry }) => {
                     console.error("Error continuing session:", error.message);
                 });
         }
-    });
+    }, [BACKEND_URL, setStage, setSessionExpiry]);
 
     const handleSendOtp = async () => {
         setLoading(true);
@@ -63,7 +61,6 @@ const Login = ({ setStage, setSessionExpiry }) => {
                 { email, otp }
             );
             if (response.status === 200) {
-                // setIsVerified(true);
                 const token = response.data.token; // Assuming your backend returns the token
                 Cookies.set("jwt", token, { secure: true, sameSite: "Strict" });
                 setStage("login");
@@ -78,33 +75,12 @@ const Login = ({ setStage, setSessionExpiry }) => {
     };
 
     return (
-        <>
-            <div className="bg-white dark:bg-boxdark">
+        <div className="min-h-screen flex items-center justify-center dark:bg-gray-900 p-5">
+            <div className="bg-white dark:bg-boxdark md:shadow-lg rounded-lg overflow-hidden w-full max-w-8xl">
                 <div className="flex flex-wrap items-center">
-                    <div className="hidden w-full xl:block xl:w-1/2">
-                        <div className="py-17.5 px-26 text-center">
-                            <img
-                                className="dark:invert m-auto"
-                                src="https://res.cloudinary.com/dwiouayh7/image/upload/v1728839717/My%20Brand/veerRajpoot_mplaff.png"
-                                alt="Logo"
-                            />
-                            <p className="text-center text-red-600 font-bold">
-                                INFORMATION
-                            </p>
-
-                            <p className="text-center text-black dark:text-white text-sm">
-                                This is a test version so you can access dummy
-                                data with your email and OTP. But in production
-                                only authorized users can access the data.
-                            </p>
-
-                            <ManageLoginMail BACKEND_URL={BACKEND_URL} />
-                        </div>
-                    </div>
-
-                    <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
-                        <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-                            <h2 className="md:mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 text-center">
+                    <div className="w-full xl:w-1/2 border-b-2 xl:border-b-0 xl:border-r-2 border-stroke dark:border-strokedark">
+                        <div className="p-8 sm:p-12 xl:p-16">
+                            <h2 className="text-2xl font-bold text-black dark:text-white text-center mb-8">
                                 LOGIN TO ADMIN DASHBOARD
                             </h2>
 
@@ -156,17 +132,8 @@ const Login = ({ setStage, setSessionExpiry }) => {
                                 )}
 
                                 <div className="mb-5">
-                                    <input
-                                        type="submit"
-                                        value={
-                                            otpSent
-                                                ? loading
-                                                    ? "Verifying..."
-                                                    : "Verify OTP"
-                                                : loading
-                                                ? "Sending OTP..."
-                                                : "Send OTP"
-                                        }
+                                    <button
+                                        type="button"
                                         onClick={
                                             otpSent
                                                 ? handleVerifyOtp
@@ -174,7 +141,15 @@ const Login = ({ setStage, setSessionExpiry }) => {
                                         }
                                         className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 transition hover:bg-opacity-90"
                                         disabled={loading}
-                                    />
+                                    >
+                                        {otpSent
+                                            ? loading
+                                                ? "Verifying..."
+                                                : "Verify OTP"
+                                            : loading
+                                            ? "Sending OTP..."
+                                            : "Send OTP"}
+                                    </button>
                                 </div>
 
                                 {errorMessage && (
@@ -185,9 +160,28 @@ const Login = ({ setStage, setSessionExpiry }) => {
                             </form>
                         </div>
                     </div>
+
+                    <div className="w-full xl:w-1/2 p-12 flex items-center justify-center bg-slate-50 dark:bg-gray-900">
+                        <div className="text-center space-y-8">
+                            <img
+                                className="dark:invert mx-auto h-32"
+                                src="https://res.cloudinary.com/dwiouayh7/image/upload/v1728839717/My%20Brand/veerRajpoot_mplaff.png"
+                                alt="Brand Logo"
+                            />
+                            <p className="text-lg font-semibold text-red-600">
+                                TEST VERSION
+                            </p>
+                            <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                                You can access dummy data using your email and
+                                OTP for this test version. In production, only
+                                authorized users will have access.
+                            </p>
+                            <ManageLoginMail BACKEND_URL={BACKEND_URL} />
+                        </div>
+                    </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 
